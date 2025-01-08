@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Success!</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <style>
+            body {
+                background-color: #f3f4f6;
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 50px;
+            }
+
+            .success-container {
+                max-width: 600px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                padding: 30px;
+                text-align: center;
+            }
+
+            h1 {
+                color: #4caf50;
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+
+            p {
+                color: #333;
+                font-size: 1.2em;
+                margin: 10px 0 20px;
+            }
+
+            button {
+                background-color: #6200ea;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                font-size: 1em;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                text-decoration: none;
+            }
+
+            button:hover {
+                background-color: #3700b3;
+                transform: scale(1.05);
+            }
+
+            button:active {
+                background-color: #1a0066;
+                transform: scale(0.95);
+            }
+
+            .success-icon {
+                font-size: 4em;
+                color: #4caf50;
+                margin-bottom: 20px;
+            }
+
+            .todo-container {
+                margin-top: 30px;
+                padding: 20px;
+                background-color: #f9f9f9;
+                border-radius: 10px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .todo-list {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .todo-list li {
+                background-color: #e1f5fe;
+                margin: 10px 0;
+                padding: 10px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .todo-list button {
+                background-color: #ff1744;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+                line-height: 30px;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            .todo-list button:hover {
+                background-color: #d50000;
+            }
+
+            .add-task {
+                margin-top: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .add-task input {
+                padding: 10px;
+                font-size: 1.1em;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                margin-right: 10px;
+                width: 70%;
+            }
+
+            .add-task button {
+                padding: 10px 20px;
+                font-size: 1.1em;
+                background-color: #6200ea;
+                color: white;
+                border: none;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="success-container">
+            <div class="success-icon">✔</div>
+            <h1>Success!</h1>
+                <p>Congratulations! Your action was successful.</p>
+            <a href="{{ url_for('homepage') }}">
+                <button>Go Back to Home</button>
+            </a>
+
+            <!-- To-Do List Section -->
+            <div class="todo-container">
+                <h2>Your To-Do List</h2>
+
+                <ul class="todo-list">
+                    {% if user.todo %}
+                        {% for task in user.todo %}
+                            <li>
+                                <span>{{ task }}</span>
+                                <form method="POST" action="{{ url_for('success') }}" style="display:inline;">
+                                    <input type="hidden" name="task" value="{{ task }}">
+                                    <button type="submit" name="action" value="delete">X</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No tasks added yet!</li>
+                    {% endif %}
+                </ul>
+
+                <!-- Add Task Form -->
+                <div class="add-task">
+                    <form method="POST" action="{{ url_for('success') }}">
+                        <input type="text" name="task" placeholder="Add a new task..." required>
+                        <button type="submit" name="action" value="add">Add Task</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

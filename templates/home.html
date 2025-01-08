@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Welcome to GPA</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Welcome to Graphical Password Authentication</h1>
+            <p>Experience secure and intuitive account management. Keep your tasks organized effortlessly.</p>
+            <div class="button-group">
+                <form method="POST">
+                    <button type="submit" name="action" value="login" class="btn">Login</button>
+                    <button type="submit" name="action" value="signup" class="btn">Signup</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

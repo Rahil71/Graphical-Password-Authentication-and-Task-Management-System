@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sign-Up Page</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <style>
+            /* Adjusted container to reduce top spacing */
+            .container {
+                margin: 5% auto; /* Reduced the top margin */
+                max-width: 600px;
+                padding: 20px;
+                background: #f9f9f9;
+                border-radius: 10px;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            .container h1 {
+                font-size: 2.5em;
+                color: #333;
+                margin-bottom: 10px; /* Slightly reduced space below the heading */
+            }
+
+            .image-checkbox {
+                border: 2px solid transparent;
+                display: inline-block;
+                cursor: pointer;
+                margin: 10px;
+            }
+
+            .image-checkbox input {
+                display: none; /* Hide the checkbox itself */
+            }
+
+            .image-checkbox input:checked + img {
+                border: 4px solid #6200ea; /* Border for selected image */
+                border-radius: 10px;
+            }
+
+            .image-checkbox img {
+                height: 120px; /* Adjusted image size for better fit */
+                width: 120px;
+                transition: transform 0.3s ease, border 0.3s ease;
+                border-radius: 10px;
+            }
+
+            .image-checkbox img:hover {
+                transform: scale(1.1);
+            }
+
+            form {
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            input[type="text"], input[type="email"], input[type="password"] {
+                width: 90%;
+                padding: 10px;
+                margin: 10px 0;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+
+            button {
+                background-color: #6200ea;
+                color: white;
+                padding: 10px 20px;
+                margin-top: 20px;
+                border: none;
+                border-radius: 5px;
+                font-size: 1em;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+
+            button:hover {
+                background-color: #3700b3;
+                transform: scale(1.05);
+            }
+
+            button:active {
+                background-color: #1a0066;
+                transform: scale(0.95);
+            }
+
+            p {
+                color: red;
+                font-size: 1em;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .image-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+        </style>
+        <script>
+            // Function to shuffle elements
+            function shuffleElements(container) {
+                const elementsArray = Array.from(container.children); // Convert children to an array
+                elementsArray.sort(() => Math.random() - 0.5); // Shuffle array using a random comparator
+                elementsArray.forEach((element) => container.appendChild(element)); // Re-append shuffled elements
+            }
+
+            // Shuffle the images on page load
+            window.onload = function () {
+                const container = document.querySelector(".image-container"); // Select the container
+                shuffleElements(container); // Shuffle the child elements
+            };
+            // Function to check if at least one image is selected
+            function validateImages() {
+                let checkboxes = document.querySelectorAll('input[name="images"]:checked');
+                if (checkboxes.length === 0) {
+                    alert("Please select at least one image!");
+                    return false;
+                }
+                return true;
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Sign-Up</h1>
+            {% if msg %}
+            <p>{{msg}}</p>
+            {% endif %}
+            <form method="POST" action="/signup" enctype="multipart/form-data" onsubmit="return validateImages()">
+                <input type="text" name="username" placeholder="Enter your name" required>
+                <br>
+                <input type="email" name="useremail" placeholder="Enter your email" required>
+                <br>
+                <input type="password" name="userpassword" placeholder="Enter your password" required>
+                <br>
+                <input type="password" name="passwordcheck" placeholder="Re-enter your password" required>
+                <br>
+                <div class="image-container">
+                    <label class="image-checkbox">
+                        <input type="checkbox" name="images" value="bus">
+                        <img src="../static/bus.png" alt="Bus">
+                    </label>
+                    <label class="image-checkbox">
+                        <input type="checkbox" name="images" value="park">
+                        <img src="../static/park.png" alt="Park">
+                    </label>
+                    <label class="image-checkbox">
+                        <input type="checkbox" name="images" value="ship">
+                        <img src="../static/ship.png" alt="Ship">
+                    </label>
+                    <label class="image-checkbox">
+                        <input type="checkbox" name="images" value="space">
+                        <img src="../static/space.png" alt="Space">
+                    </label>
+                    <label class="image-checkbox">
+                        <input type="checkbox" name="images" value="switzerland">
+                        <img src="../static/switzerland.png" alt="Switzerland">
+                    </label>
+                </div>
+                <br>
+                <button type="submit">Sign-Up</button>
+            </form>
+        </div>
+    </body>
+</html>
