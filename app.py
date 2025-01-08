@@ -125,13 +125,11 @@ def success():
             elif user_action == "delete":
                 task_to_delete = request.form.get('task')
 
-                # Delete the task if it exists in the todo list
                 if task_to_delete in user.todo:
-                    # Create a copy of the current todo list, modify it, and reassign
-                    updated_todo = user.todo[:]  # Copy the list to avoid issues
+                    updated_todo = user.todo[:]
                     updated_todo.remove(task_to_delete)
-                    user.todo = updated_todo  # Reassign to the column
-                    db.session.commit()  # Commit changes to the database
+                    user.todo = updated_todo
+                    db.session.commit()
 
     return render_template("success.html", user=user)
 
