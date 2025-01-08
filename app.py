@@ -106,7 +106,6 @@ def success():
     user_id = session.get('user_id')
     user = User.query.get(user_id)
 
-    # Ensure the 'todo' field is a list, even if it's None
     if user:
         if user.todo is None:
             user.todo = []
@@ -117,13 +116,11 @@ def success():
             if user_action == "add":
                 new_task = request.form.get('task')
 
-                # Add the new task if it's not empty and doesn't already exist
                 if new_task and new_task not in user.todo:
-                    # Create a copy of the current todo list, modify it, and reassign
-                    updated_todo = user.todo[:]  # Copy the list to avoid issues
+                    updated_todo = user.todo[:]
                     updated_todo.append(new_task)
-                    user.todo = updated_todo  # Reassign to the column
-                    db.session.commit()  # Commit changes to the database
+                    user.todo = updated_todo 
+                    db.session.commit()
 
             elif user_action == "delete":
                 task_to_delete = request.form.get('task')
