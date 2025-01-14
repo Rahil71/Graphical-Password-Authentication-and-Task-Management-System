@@ -9,6 +9,8 @@ app.config['SECRET_KEY']=os.urandom(32)
 
 db=SQLAlchemy(app)
 
+print("hello")
+
 class User(db.Model):
     __tablename__="users"
     id=db.Column(db.Integer, primary_key=True)
