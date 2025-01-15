@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for, flash, session, json
+from flask import Flask, render_template, redirect, request, url_for, session, json
 from flask_sqlalchemy import SQLAlchemy
 import redis
 import os
