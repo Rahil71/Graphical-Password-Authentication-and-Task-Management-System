@@ -53,7 +53,6 @@ def login():
         user_info=r.hgetall(f"user:{user_name}")
 
         if user_info:
-            print("Passing data from redis Login!")
             if user_info['userpassword']==user_password and user_info['useremail']==user_email:
                 if set(selected_images)==set(json.loads(user_info['selectedimages'])):
                     session['user_id']=user_info['id']
@@ -70,7 +69,6 @@ def login():
                 if user_password == user.userpassword:
                     if user_email == user.useremail:
                         if set(selected_images) == set(user.selectedimages):
-                            print("storing data while logging in!")
                             r.hmset(f"user:{user.username}",{
                                 'id':user.id,
                                 'useremail':user.useremail,
@@ -120,7 +118,6 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        print("Storing while signing!")
         r.hmset(f"user:{new_user.username}",{
             'id':new_user.id,
             'useremail':new_user.useremail,
