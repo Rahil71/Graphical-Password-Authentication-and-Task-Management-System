@@ -30,10 +30,10 @@ pip install -r requirements.txt
 **Requirements.txt**
 
 ```txt
-Flask==2.0.2
-Flask-SQLAlchemy==2.5.1
+flask==3.1.0
+Flask-SQLAlchemy==3.0.3
 psycopg2==2.9.1
-redis==4.5.5
+redis==5.2.1
 ```
 
 ## Database and Redis Setup
