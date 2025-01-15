@@ -1,5 +1,6 @@
-from flask import Flask, render_template, redirect, request, url_for, flash, session
+from flask import Flask, render_template, redirect, request, url_for, flash, session, json
 from flask_sqlalchemy import SQLAlchemy
+import redis
 import os
 
 app=Flask(__name__)
@@ -8,6 +9,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 app.config['SECRET_KEY']=os.urandom(32)
 
 db=SQLAlchemy(app)
+
+r=redis.Redis(host="localhost", port=6379 ,decode_responses=True)
 
 class User(db.Model):
     __tablename__="users"
@@ -46,22 +49,45 @@ def login():
         user_password = request.form['userpassword']
         selected_images = request.form.getlist('images')
 
-        user = db.session.query(User).filter(User.username == user_name).first()
+        #Redis
+        user_info=r.hgetall(f"user:{user_name}")
 
-        if user:
-            if user_password == user.userpassword:
-                if user_email == user.useremail:
-                    if set(selected_images) == set(user.selectedimages):
-                        session['user_id']=user.id
-                        return redirect(url_for('success'))
-                    else:
-                        return render_template('login.html', msg="Wrong selection of images!")
+        if user_info:
+            print("Passing data from redis Login!")
+            if user_info['userpassword']==user_password and user_info['useremail']==user_email:
+                if set(selected_images)==set(json.loads(user_info['selectedimages'])):
+                    session['user_id']=user_info['id']
+                    return redirect(url_for('success'))
                 else:
-                    return render_template('login.html', msg="Wrong email")
+                    return render_template('login.html',msg="Wrong selection og images")
             else:
-                return render_template('login.html', msg="Wrong password")
+                return render_template('login.html',msg="Wrong Credentials!")
         else:
-            return render_template('login.html', msg="User does not exist!")
+            #PostgreSQL
+            user = db.session.query(User).filter(User.username == user_name).first()
+
+            if user:
+                if user_password == user.userpassword:
+                    if user_email == user.useremail:
+                        if set(selected_images) == set(user.selectedimages):
+                            print("storing data while logging in!")
+                            r.hmset(f"user:{user.username}",{
+                                'id':user.id,
+                                'useremail':user.useremail,
+                                'userpassword':user.userpassword,
+                                'selectedimages':json.dumps(user.selectedimages)
+                            })
+                            session['user_id']=user.id
+                            return redirect(url_for('success'))
+                        else:
+                            return render_template('login.html', msg="Wrong selection of images!")
+                    else:
+                        return render_template('login.html', msg="Wrong email")
+                else:
+                    return render_template('login.html', msg="Wrong password")
+            else:
+                return render_template('login.html', msg="User does not exist!")
+
     else:
         return render_template('login.html')
 
@@ -93,6 +119,14 @@ def signup():
         )
         db.session.add(new_user)
         db.session.commit()
+
+        print("Storing while signing!")
+        r.hmset(f"user:{new_user.username}",{
+            'id':new_user.id,
+            'useremail':new_user.useremail,
+            'userpassword':new_user.userpassword,
+            'selectedimages':json.dumps(new_user.selectedimages)
+        })
 
         session['user_id']=new_user.id
 
