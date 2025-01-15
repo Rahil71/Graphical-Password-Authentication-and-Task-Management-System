@@ -2,13 +2,14 @@
 
 ## Description
 
-This project implements a **Graphical Password Authentication** system combined with a **Task Management System (To-Do List)**, developed using **Flask** and **PostgreSQL**. The system allows users to securely authenticate via graphical images, create tasks, and manage their to-do lists. This application ensures a seamless user experience with a focus on security and task organization.
+This project implements a **Graphical Password Authentication** system combined with a **Task Management System (To-Do List)**, developed using **Flask**, **PostgreSQL**, and **Redis**. The system allows users to securely authenticate via graphical images, create tasks, and manage their to-do lists. This application ensures a seamless user experience with a focus on security, performance, and task organization.
 
 ## Features
 
 - **Graphical Password Authentication**: Users authenticate by selecting a set of images they’ve previously chosen during sign-up.
 - **To-Do List**: Users can manage tasks, add new ones, and delete existing ones from their personal to-do list.
-- **PostgreSQL Integration**: The app uses PostgreSQL as the database backend to store user credentials, selected images for authentication, and task lists.
+- **PostgreSQL Integration**: The app uses PostgreSQL as the primary database backend to store user credentials, selected images for authentication, and task lists.
+- **Redis Caching**: The app leverages Redis to cache frequently accessed user data, improving login performance and reducing database load.
 
 ## Prerequisites
 
@@ -16,6 +17,7 @@ Before running the application, ensure that you have the following installed:
 
 - **Python 3.x**: The application is developed in Python.
 - **PostgreSQL**: The database backend for storing user information and tasks.
+- **Redis**: A high-performance in-memory data store used for caching.
 - **Flask**: The web framework used to build the app.
 - **Flask-SQLAlchemy**: For ORM-based database interaction.
 
@@ -31,9 +33,12 @@ pip install -r requirements.txt
 Flask==2.0.2
 Flask-SQLAlchemy==2.5.1
 psycopg2==2.9.1
+redis==4.5.5
 ```
 
-## Database Setup
+## Database and Redis Setup
+
+### PostgreSQL
 
 This application uses **PostgreSQL** as the database. Follow the steps below to set it up:
 
@@ -59,6 +64,22 @@ This application uses **PostgreSQL** as the database. Follow the steps below to 
     ```
 
     This will create the required tables (`users` and any other necessary tables) in your `lexus` database.
+
+### Redis
+
+This application uses **Redis** to cache user data for performance optimization. Follow these steps to set up Redis:
+
+1. **Install Redis**: Install Redis on your machine. For installation instructions, visit [Redis Official Website](https://redis.io/).
+
+2. **Start the Redis Server**: Start the Redis server to enable caching.
+
+    ```bash
+    redis-server
+    ```
+
+3. **Verify Connection**: Ensure that Redis is running and accessible on `localhost` at port `6379` (default settings). No additional configuration is required unless you use a custom setup.
+
+4. **Integration in App**: Redis is used to store user session data and improve login efficiency by reducing database queries. Data like `user credentials` and `selected images` are cached during login and sign-up processes.
 
 ## File Structure
 
@@ -115,6 +136,11 @@ To run the application locally, use the following steps:
 - During **Sign-Up**, users are asked to select a set of images that will be used for authentication.
 - During **Login**, users must enter their username, email, password, and select the same images they initially selected during sign-up to authenticate.
 
+### Redis Caching in Authentication
+
+- **Sign-Up**: User data, including selected images, is stored in PostgreSQL and cached in Redis for quick access.
+- **Login**: The app first checks Redis for user data. If found, it avoids querying the database and validates user credentials directly from Redis. This reduces latency and improves performance.
+
 ## Screenshots
 
 Here are some screenshots of the application:
@@ -141,17 +167,18 @@ Here are some screenshots of the application:
 
 ![PostgreSQL Database](./static/images-git/postgresql.png)
 
+### 6. Redis Database
+![Redis Database](./static/images-git/redis.png)
+
 ## Technologies Used
 
 - **Flask**: The web framework for building the application.
 - **Flask-SQLAlchemy**: The ORM used for database interaction.
 - **PostgreSQL**: The relational database used to store user information and tasks.
+- **Redis**: The in-memory data store used for caching user data.
 - **HTML/CSS**: For the front-end design of the web pages.
 
 ## Contribution
 
 Feel free to fork the repository and submit pull requests. If you find any bugs or issues, please open an issue so that it can be addressed.
 
-## License
-
-This project is open-source and available under the MIT License. See the [LICENSE](LICENSE) file for more details.
